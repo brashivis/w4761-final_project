@@ -3,7 +3,6 @@ from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout, Masking, Embedding
 from keras.preprocessing.text import Tokenizer
 from keras.callbacks import ModelCheckpoint, EarlyStopping
-import numpy as np
 import random
 
 
@@ -40,25 +39,35 @@ def sequence_tokenizer(lines):
         idx_word: a set that has the number to sequence mapping
     '''
     parsed_list = list()
+    # for i in range(len(lines)):
+    #     sequence = lines[i][0]
+    #     structure = lines[i][1]
+    #     sub_parsed_list = list()
+    #     group_start = 0
+    #
+    #     for j in range(len(structure)):
+    #         if structure[j] != structure[group_start]:
+    #             if structure[group_start] == '(':
+    #                 sub_parsed_list.append([sequence[group_start: j], '('])
+    #             elif structure[group_start] == ')':
+    #                 sub_parsed_list.append([sequence[group_start: j], ')'])
+    #             elif structure[group_start] == '<':
+    #                 sub_parsed_list.append([sequence[group_start: j], '<'])
+    #             elif structure[group_start] == '>':
+    #                 sub_parsed_list.append([sequence[group_start: j], '>'])
+    #             else:
+    #                 sub_parsed_list.append([sequence[group_start: j], '.'])
+    #             group_start = j
+    #     parsed_list.extend(sub_parsed_list)
+
+    kmer = 10
     for i in range(len(lines)):
         sequence = lines[i][0]
         structure = lines[i][1]
         sub_parsed_list = list()
-        group_start = 0
 
-        for j in range(len(structure)):
-            if structure[j] != structure[group_start]:
-                if structure[group_start] == '(':
-                    sub_parsed_list.append([sequence[group_start: j], '('])
-                elif structure[group_start] == ')':
-                    sub_parsed_list.append([sequence[group_start: j], ')'])
-                elif structure[group_start] == '<':
-                    sub_parsed_list.append([sequence[group_start: j], '<'])
-                elif structure[group_start] == '>':
-                    sub_parsed_list.append([sequence[group_start: j], '>'])
-                else:
-                    sub_parsed_list.append([sequence[group_start: j], '.'])
-                group_start = j
+        for j in range(len(structure) - kmer):
+            sub_parsed_list.append([sequence[j: j + kmer], structure[j: j + kmer]])
         parsed_list.extend(sub_parsed_list)
 
     token = Tokenizer(num_words=None, filters='', lower=False, split=' ')
@@ -113,7 +122,7 @@ if __name__ == "__main__":
 
     # run the tokenizer
     tokenized_sequence, indexed_word = sequence_tokenizer(lines)
-
+    print(tokenized_sequence)
     # set the feature and labels
     random.shuffle(tokenized_sequence)
 
