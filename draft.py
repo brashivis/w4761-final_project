@@ -22,7 +22,7 @@ def purge(filepath):
     with open(filepath, 'r') as readfile:
         seq_reader = csv.reader(readfile)
         for row in seq_reader:
-            if len(row[1]) > 1800:
+            if len(row[1]) > 2600:
                 lines.append([row[1], row[2]])
 
     print(len(lines), " lines saved after purging ")
@@ -150,8 +150,8 @@ class RNN:
         print("training the model with ", len(x_train), " training data")
         history = self.model.fit(x_train,
                                  y_train,
-                                 batch_size=512,
-                                 epochs=150,
+                                 batch_size=256,
+                                 epochs=20,
                                  callbacks=self.call_backs,
                                  validation_data=(x_test, y_test))
 
@@ -160,7 +160,7 @@ class RNN:
 
 
 if __name__ == "__main__":
-    kmer = 10
+    kmer = 20
 
     # get a list of RNA sequence and secondary structures
     lines = purge('purged_RNA_secondary_structure.csv')
