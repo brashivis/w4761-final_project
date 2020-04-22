@@ -8,7 +8,7 @@ import random
 
 
 def purge(filepath):
-    '''
+    """
     The purge method will extract data from the input .csv file and
     remove rows that have <100 RNA nucleotides
     Args:
@@ -16,13 +16,13 @@ def purge(filepath):
 
     Returns:
         a list that contains the RNA sequence and secondary structure arrays
-    '''
+    """
     lines = list()
     # import the .csv as a list
     with open(filepath, 'r') as readfile:
         seq_reader = csv.reader(readfile)
         for row in seq_reader:
-            if len(row[1]) > 1800:
+            if len(row[1]) > 2600:
                 lines.append([row[1], row[2]])
 
     print(len(lines), " lines saved after purging ")
@@ -30,7 +30,7 @@ def purge(filepath):
 
 
 def sequence_tokenizer(lines, kmer):
-    '''
+    """
     The sequence_tokenizer will tokenize the sequence and convert the token to
     numeric values for training
     Args:
@@ -40,7 +40,7 @@ def sequence_tokenizer(lines, kmer):
     Returns:
         sequences: the tokenized sequence in numeric representation
         idx_word: a set that has the number to sequence mapping
-    '''
+    """
     parsed_list = list()
     # for i in range(len(lines)):
     #     sequence = lines[i][0]
@@ -84,7 +84,7 @@ def sequence_tokenizer(lines, kmer):
 
 
 def feature_label_extractor(sequences):
-    '''
+    """
     The function will generate the feature and label arrays
     Args:
         sequences: the input sequences
@@ -92,7 +92,7 @@ def feature_label_extractor(sequences):
     Returns:
         features: the features array
         label_array: one-hot coded label array
-    '''
+    """
     features = []
     labels = []
 
@@ -115,12 +115,12 @@ def feature_label_extractor(sequences):
 
 class RNN:
     def __init__(self, dim, length):
-        '''
+        """
         initialize the RNN model with the input dimension and length
         Args:
             dim: the dimension is the length of the unique vocabulary + 1
             length: The column number for the input feature array
-        '''
+        """
         self.model = Sequential()
         # Embedding layer
         self.model.add(Embedding(input_dim=dim,
@@ -150,8 +150,8 @@ class RNN:
         print("training the model with ", len(x_train), " training data")
         history = self.model.fit(x_train,
                                  y_train,
-                                 batch_size=512,
-                                 epochs=150,
+                                 batch_size=256,
+                                 epochs=20,
                                  callbacks=self.call_backs,
                                  validation_data=(x_test, y_test))
 
@@ -160,7 +160,7 @@ class RNN:
 
 
 if __name__ == "__main__":
-    kmer = 10
+    kmer = 4
 
     # get a list of RNA sequence and secondary structures
     lines = purge('purged_RNA_secondary_structure.csv')
