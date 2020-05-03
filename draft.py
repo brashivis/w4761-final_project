@@ -1,10 +1,11 @@
 import csv
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import LSTM, Dense, Dropout, Masking, Embedding
 from keras.preprocessing.text import Tokenizer
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 import numpy as np
 import random
+from datetime import datetime
 
 
 def purge(filepath):
@@ -22,7 +23,7 @@ def purge(filepath):
     with open(filepath, 'r') as readfile:
         seq_reader = csv.reader(readfile)
         for row in seq_reader:
-            if len(row[1]) > 2600:
+            if len(row[1]) > 2000:
                 lines.append([row[1], row[2]])
 
     print(len(lines), " lines saved after purging ")
@@ -42,26 +43,6 @@ def sequence_tokenizer(lines, kmer):
         idx_word: a set that has the number to sequence mapping
     '''
     parsed_list = list()
-    # for i in range(len(lines)):
-    #     sequence = lines[i][0]
-    #     structure = lines[i][1]
-    #     sub_parsed_list = list()
-    #     group_start = 0
-    #
-    #     for j in range(len(structure)):
-    #         if structure[j] != structure[group_start]:
-    #             if structure[group_start] == '(':
-    #                 sub_parsed_list.append([sequence[group_start: j], '('])
-    #             elif structure[group_start] == ')':
-    #                 sub_parsed_list.append([sequence[group_start: j], ')'])
-    #             elif structure[group_start] == '<':
-    #                 sub_parsed_list.append([sequence[group_start: j], '<'])
-    #             elif structure[group_start] == '>':
-    #                 sub_parsed_list.append([sequence[group_start: j], '>'])
-    #             else:
-    #                 sub_parsed_list.append([sequence[group_start: j], '.'])
-    #             group_start = j
-    #     parsed_list.extend(sub_parsed_list)
 
     for i in range(len(lines)):
         sequence = lines[i][0]
@@ -121,6 +102,10 @@ class RNN:
             dim: the dimension is the length of the unique vocabulary + 1
             length: The column number for the input feature array
         '''
+        # datetime object containing current date and time
+        now = datetime.now()
+        format_date = now.strftime("%b-%d-%Y_%H-%M-%S")
+
         self.model = Sequential()
         # Embedding layer
         self.model.add(Embedding(input_dim=dim,
@@ -143,7 +128,7 @@ class RNN:
         self.model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
         # create callback
         self.call_backs = [EarlyStopping(monitor='val_loss', patience=5),
-                           ModelCheckpoint('model.h5', save_best_only=True, save_weights_only=False)]
+                           ModelCheckpoint(format_date + '.h5', save_best_only=True, save_weights_only=False)]
         print("model is initialized with ", dim, " input_dim and ", length, " input length")
 
     def train(self, x_train, y_train, x_test, y_test):
@@ -151,7 +136,7 @@ class RNN:
         history = self.model.fit(x_train,
                                  y_train,
                                  batch_size=256,
-                                 epochs=20,
+                                 epochs=10,
                                  callbacks=self.call_backs,
                                  validation_data=(x_test, y_test))
 
@@ -160,7 +145,8 @@ class RNN:
 
 
 if __name__ == "__main__":
-    kmer = 20
+    kmer = 6
+    print("training with", kmer, "kmer")
 
     # get a list of RNA sequence and secondary structures
     lines = purge('purged_RNA_secondary_structure.csv')
@@ -186,9 +172,18 @@ if __name__ == "__main__":
     model = RNN(vocab_len, 1)
 
     # train
-    history = model.train(x_train, y_train, x_test, y_test)
-    print(history)
+    # now = datetime.now()
+    # start_time = now.strftime("%b-%d-%Y %H:%M:%S")
+    # print("start training", start_time)
+    # history = model.train(x_train, y_train, x_test, y_test)
+    # end_time = now.strftime("%b-%d-%Y %H:%M:%S")
+    # print("training completed", end_time )
 
+    # Load in model and evaluate on validation data
+    model = load_model('May-02-2020_23-24-58.h5')
+    model.summary()
+    results = model.evaluate(x_test, y_test)
+    print('test loss, test accuracy:', results)
 
 
 
