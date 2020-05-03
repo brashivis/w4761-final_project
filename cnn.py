@@ -39,7 +39,11 @@ class CNN:
         return history
 
 def plot_vals(history, modelname):
-    history.loc[:, 'val_accuracy'].plot(x='Epoch', y='Validation Accuracy')
+    fig, ax = plt.subplots()
+    # history.loc[:, 'val_accuracy'].plot(x='Epoch', y='Validation Accuracy', ax=ax)
+    plt.plot(history.loc[:, 'val_accuracy'])
+    plt.xlabel('Epochs')
+    plt.ylabel('Validation Accuracy')
     plt.savefig('plots/{}_val_accuracy.png'.format(modelname))
 
 def manage_runs(e=10, sample_rate=0.3):
@@ -82,7 +86,7 @@ def train_model(lines, k, batch_size, epochs, sample_rate):
     plot_vals(history_df, modelname)
 
 if __name__ == '__main__':
-    manage_runs(e=1)
+    manage_runs(e=10)
 
     # # Parameters
     # k = 4
