@@ -42,7 +42,7 @@ def plot_vals(history, modelname):
     history.loc[:, 'val_accuracy'].plot(x='Epoch', y='Validation Accuracy')
     plt.savefig('plots/{}_val_accuracy.png'.format(modelname))
 
-def manage_runs(e=10):
+def manage_runs(e=10, sample_rate=0.3):
     # General Parameters
     batch_size = 256
 
@@ -51,9 +51,11 @@ def manage_runs(e=10):
 
     # Run model
     for k in range(4, 11, 2):
-        train_model(lines, k, batch_size, e)
+        train_model(lines, k, batch_size, e, sample_rate=sample_rate)
 
-def train_model(lines, k, batch_size, epochs):
+def train_model(lines, k, batch_size, epochs, sample_rate):
+    chosen_inds = np.random.choice(lines.shape[0], int(lines.shape[0] * 0.4))
+    lines = lines[chosen_inds]
     random.shuffle(lines)
 
     tokenized_sequence, indexed_word = d.sequence_tokenizer(lines, k)
@@ -71,7 +73,7 @@ def train_model(lines, k, batch_size, epochs):
     # Train Model
     modelname = 'cnn_{}'.format(k)
     model = CNN(vocab_len, 1, modelname)
-    print(model.summary())
+    print(model.model.summary())
     history = model.train(x_train, y_train, x_test, y_test, batch_size=batch_size, e=epochs)
 
     # Save history and figures
@@ -80,7 +82,7 @@ def train_model(lines, k, batch_size, epochs):
     plot_vals(history_df, modelname)
 
 if __name__ == '__main__':
-    manage_runs(e=10)
+    manage_runs(e=1)
 
     # # Parameters
     # k = 4
@@ -88,7 +90,9 @@ if __name__ == '__main__':
     # epochs = 2 
 
     # # Data Preprocessing
-    # lines = d.purge('purged_RNA_secondary_structure.csv')
+    # lines = np.array(d.purge('purged_RNA_secondary_structure.csv'))
+    # chosen_inds = np.random.choice(lines.shape[0], int(lines.shape[0] * 0.4))
+    # lines = lines[chosen_inds]
     # random.shuffle(lines)
 
     # tokenized_sequence, indexed_word = d.sequence_tokenizer(lines, k)
