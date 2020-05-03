@@ -51,7 +51,7 @@ def manage_runs(e=10, sample_rate=0.3):
     batch_size = 256
 
     # General Data Processing
-    lines = d.purge('purged_RNA_secondary_structure.csv')
+    lines = np.array(d.purge('purged_RNA_secondary_structure.csv'))
 
     # Run model
     for k in range(4, 11, 2):
