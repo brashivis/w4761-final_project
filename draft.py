@@ -83,7 +83,7 @@ def sequence_tokenizer(lines, kmer):
     return sequences, idx_word
 
 
-def feature_label_extractor(sequences):
+def feature_label_extractor(sequences, vocab_len):
     """
     The function will generate the feature and label arrays
     Args:
@@ -173,7 +173,7 @@ if __name__ == "__main__":
     vocab_len = len(indexed_word) + 1
 
     # get feature and labels
-    features, labels = feature_label_extractor(tokenized_sequence)
+    features, labels = feature_label_extractor(tokenized_sequence, vocab_len)
 
     # split training and test sets
     split = int(0.8 * len(features))
