@@ -2,12 +2,14 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Masking, Embedding, Conv1D, MaxPool1D, GlobalMaxPool1D
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 import random
 
 import draft as d
 
 class CNN:
-    def __init__(self, dim, length):
+    def __init__(self, dim, length, modelname='cnn_model'):
         self.model = Sequential()
 
         self.model.add(Embedding(input_dim=dim,
@@ -29,16 +31,22 @@ class CNN:
 
         self.model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-        self.callbacks = [ModelCheckpoint('cnn_model.h5', save_best_only=True, save_weights_only=False)]
+        self.callbacks = [ModelCheckpoint('saved_models/'+modelname+'.h5', save_best_only=True, save_weights_only=False)]
     
     def train(self, x_train, y_train, x_test, y_test, e=20, batch_size=256):
         history = self.model.fit(x_train, y_train, batch_size=batch_size, epochs=e, callbacks=self.callbacks, validation_data=(x_test, y_test))
+
+        return history
+
+def plot_vals(history, modelname):
+    history.loc[:, 'val_accuracy'].plot(x='Epoch', y='Validation Accuracy')
+    plt.savefig('plots/{}_val_accuracy.png'.format(modelname))
 
 if __name__ == '__main__':
     # Parameters
     k = 4
     batch_size = 256
-    epochs = 20
+    epochs = 2 
 
     # Data Preprocessing
     lines = d.purge('purged_RNA_secondary_structure.csv')
@@ -57,8 +65,12 @@ if __name__ == '__main__':
     y_test = labels[split:]
 
     # Train Model
-    model = CNN(vocab_len, 1)
+    modelname = 'cnn_{}'.format(k)
+    model = CNN(vocab_len, 1, modelname)
     print(vocab_len)
     print(model.model.summary())
     history = model.train(x_train, y_train, x_test, y_test, batch_size=batch_size, e=epochs)
     print(history)
+    history_df = pd.DataFrame(history.history)
+    history_df.to_csv('model_history/'+modelname+'_data.csv')
+    plot_vals(history_df, modelname)
