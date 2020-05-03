@@ -42,14 +42,18 @@ def plot_vals(history, modelname):
     history.loc[:, 'val_accuracy'].plot(x='Epoch', y='Validation Accuracy')
     plt.savefig('plots/{}_val_accuracy.png'.format(modelname))
 
-if __name__ == '__main__':
-    # Parameters
-    k = 4
+def manage_runs(e=10):
+    # General Parameters
     batch_size = 256
-    epochs = 2 
 
-    # Data Preprocessing
+    # General Data Processing
     lines = d.purge('purged_RNA_secondary_structure.csv')
+
+    # Run model
+    for k in range(4, 11, 2):
+        train_model(lines, k, batch_size, e)
+
+def train_model(lines, k, batch_size, epochs):
     random.shuffle(lines)
 
     tokenized_sequence, indexed_word = d.sequence_tokenizer(lines, k)
@@ -67,10 +71,45 @@ if __name__ == '__main__':
     # Train Model
     modelname = 'cnn_{}'.format(k)
     model = CNN(vocab_len, 1, modelname)
-    print(vocab_len)
-    print(model.model.summary())
+    print(model.summary())
     history = model.train(x_train, y_train, x_test, y_test, batch_size=batch_size, e=epochs)
-    print(history)
+
+    # Save history and figures
     history_df = pd.DataFrame(history.history)
     history_df.to_csv('model_history/'+modelname+'_data.csv')
     plot_vals(history_df, modelname)
+
+if __name__ == '__main__':
+    manage_runs(e=10)
+
+    # # Parameters
+    # k = 4
+    # batch_size = 256
+    # epochs = 2 
+
+    # # Data Preprocessing
+    # lines = d.purge('purged_RNA_secondary_structure.csv')
+    # random.shuffle(lines)
+
+    # tokenized_sequence, indexed_word = d.sequence_tokenizer(lines, k)
+    # vocab_len = len(indexed_word) + 1
+
+    # features, labels = d.feature_label_extractor(tokenized_sequence, vocab_len)
+
+    # # Train/Test Split
+    # split = int(0.8 * len(features))
+    # x_train = features[:split]
+    # x_test = features[split:]
+    # y_train = labels[:split]
+    # y_test = labels[split:]
+
+    # # Train Model
+    # modelname = 'cnn_{}'.format(k)
+    # model = CNN(vocab_len, 1, modelname)
+    # print(vocab_len)
+    # print(model.model.summary())
+    # history = model.train(x_train, y_train, x_test, y_test, batch_size=batch_size, e=epochs)
+    # print(history)
+    # history_df = pd.DataFrame(history.history)
+    # history_df.to_csv('model_history/'+modelname+'_data.csv')
+    # plot_vals(history_df, modelname)
