@@ -30,13 +30,14 @@ def purge(filepath):
     return lines
 
 
-def sequence_tokenizer(lines, kmer):
+def sequence_tokenizer(lines, kmer, increment):
     '''
     The sequence_tokenizer will tokenize the sequence and convert the token to
     numeric values for training
     Args:
         lines: the input list that contains arrays of RNA sequence and secondary structures
         kmer: the k-mer length for parsing the sequences
+        increment: the step size for the iteration loop
 
     Returns:
         sequences: the tokenized sequence in numeric representation
@@ -44,14 +45,17 @@ def sequence_tokenizer(lines, kmer):
     '''
     parsed_list = list()
 
-    for i in range(len(lines)):
-        sequence = lines[i][0]
-        structure = lines[i][1]
-        sub_parsed_list = list()
+    if increment <= kmer:
+        for i in range(len(lines)):
+            sequence = lines[i][0]
+            structure = lines[i][1]
+            sub_parsed_list = list()
 
-        for j in range(len(structure) - kmer):
-            sub_parsed_list.append([sequence[j: j + kmer], structure[j: j + kmer]])
-        parsed_list.extend(sub_parsed_list)
+            for j in range(0, len(structure) - kmer, increment):
+                sub_parsed_list.append([sequence[j: j + kmer], structure[j: j + kmer]])
+            parsed_list.extend(sub_parsed_list)
+    else:
+        print("invalid input: increment size > kmer")
 
     token = Tokenizer(num_words=None, filters='', lower=False, split=' ')
     # train the tokenizer and convert nucleotide into integers
@@ -155,7 +159,7 @@ if __name__ == "__main__":
     random.shuffle(lines)
 
     # run the tokenizer
-    tokenized_sequence, indexed_word = sequence_tokenizer(lines, kmer)
+    tokenized_sequence, indexed_word = sequence_tokenizer(lines, kmer, 1)
     vocab_len = len(indexed_word) + 1
 
     # get feature and labels
@@ -172,18 +176,22 @@ if __name__ == "__main__":
     model = RNN(vocab_len, 1)
 
     # train
-    # now = datetime.now()
-    # start_time = now.strftime("%b-%d-%Y %H:%M:%S")
-    # print("start training", start_time)
-    # history = model.train(x_train, y_train, x_test, y_test)
-    # end_time = now.strftime("%b-%d-%Y %H:%M:%S")
-    # print("training completed", end_time )
+    history = model.train(x_train, y_train, x_test, y_test)
+    now = datetime.now()
+    end_time = now.strftime("%b-%d-%Y %H:%M:%S")
+    print("training completed", end_time)
 
-    # Load in model and evaluate on validation data
-    model = load_model('May-02-2020_23-24-58.h5')
-    model.summary()
-    results = model.evaluate(x_test, y_test)
-    print('test loss, test accuracy:', results)
+    # # Load in model and evaluate on validation data
+    # model = load_model('May-03-2020_13-38-01.h5')
+    # model.summary()
+    # results = model.evaluate(x_test, y_test)
+    # print('test loss, test accuracy:', results)
+    #
+    # # try out a prediction
+    # print("RNA sequence is:\n", x_test[:1])
+    # predictions = model.predict(x_test[:1])
+    # print('prediction:\n', predictions)
+    # print('actual:\n', y_test[:1])
 
 
 
