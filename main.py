@@ -6,11 +6,11 @@ import post_process as pp
 
 
 if __name__ == "__main__":
-    kmer = 2
+    kmer = 6
     print("training with", kmer, "kmer")
 
     # get a list of RNA sequence and secondary structures
-    lines = tk.purge('purged_RNA_secondary_structure.csv')
+    lines = tk.purge('RNA_sequence_input.csv')
 
     # shuffle the data
     random.shuffle(lines)
