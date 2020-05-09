@@ -31,9 +31,9 @@ class CNN:
 
         self.model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-        self.callbacks = [ModelCheckpoint('saved_models/'+modelname+'.h5', save_best_only=True, save_weights_only=False)]
+        self.callbacks = [ModelCheckpoint(modelname+'.h5', save_best_only=True, save_weights_only=False)]
     
-    def train(self, x_train, y_train, x_test, y_test, e=20, batch_size=256):
+    def train(self, x_train, y_train, x_test, y_test, e=10, batch_size=256):
         history = self.model.fit(x_train, y_train, batch_size=batch_size, epochs=e, callbacks=self.callbacks, validation_data=(x_test, y_test))
 
         return history

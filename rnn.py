@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 class RNN:
-    def __init__(self, dim, length):
+    def __init__(self, dim, length, model_name='rnn_model'):
         '''
         initialize the RNN model with the input dimension and length
         Args:
@@ -14,7 +14,7 @@ class RNN:
         '''
         # datetime object containing current date and time
         now = datetime.now()
-        format_date = now.strftime("%b-%d-%Y_%H-%M-%S")
+        format_date = now.strftime("%b-%d-%Y_")
 
         self.model = Sequential()
         # Embedding layer
@@ -38,7 +38,9 @@ class RNN:
         self.model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
         # create callback
         self.call_backs = [EarlyStopping(monitor='val_loss', patience=5),
-                           ModelCheckpoint(format_date + '.h5', save_best_only=True, save_weights_only=False)]
+                           ModelCheckpoint(model_name + '.h5',
+                                           save_best_only=True,
+                                           save_weights_only=False)]
         print("model is initialized with ", dim, " input_dim and ", length, " input length")
 
     def train(self, x_train, y_train, x_test, y_test):
