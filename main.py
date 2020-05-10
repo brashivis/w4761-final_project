@@ -37,8 +37,8 @@ if __name__ == "__main__":
         cnn_model = cnn.CNN(vocab_len, 1, cnn_model_name)
 
         # train
-        rnn_history = rnn_model.train(x_train, y_train, x_test, y_test, e=1)
-        cnn_history = cnn_model.train(x_train, y_train, x_test, y_test, e=1)
+        rnn_history = rnn_model.train(x_train, y_train, x_test, y_test, e=20)
+        cnn_history = cnn_model.train(x_train, y_train, x_test, y_test, e=20)
         pp.save_and_plot(rnn_history, rnn_model_name)
         pp.save_and_plot(cnn_history, cnn_model_name)
 
