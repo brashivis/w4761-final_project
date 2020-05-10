@@ -82,7 +82,7 @@ def convert_notation_rnng(sequence, structure):
     parse_seq.append(')')
     parse_seq_str = ''.join(parse_seq)
     if parse_seq_str.count('(') != parse_seq_str.count(')'):
-        # Code should never reach this point
+        # Code should never reach this point on well-formed inputs
         raise AttributeError('Imbalanced structure \nStructure: {} \nSequence: {}'.format(structure, sequence))
     return parse_seq_str
 
