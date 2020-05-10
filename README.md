@@ -16,3 +16,12 @@ This file contains functions for plotting the training vs validation loss and ac
 * RNA_sequence_input.csv  
 This the input file for the main function
 
+## Files in folder dataset_preparation_Kevin_Wong_hw2735
+* Cleaning up ct files.ipynb
+This Jupyter Notebook cleans the .ct files initially downloaded from RNA STRAND database, and also contains scripts to integrate the converted .ct files into one single .csv file in dot-bracket notation. Further explanation is given within the notebook
+* RNA_secondary_structure.csv
+This is the completed dataset for the project
+* cmd commands.xlsx
+Excel is used to create the commands for "ct2dot" tool
+* ct2dot_cmd.txt
+This is the command line script used to execute the"ct2dot" tool, within Windows environment
