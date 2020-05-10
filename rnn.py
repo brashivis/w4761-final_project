@@ -43,12 +43,12 @@ class RNN:
                                            save_weights_only=False)]
         print("model is initialized with ", dim, " input_dim and ", length, " input length")
 
-    def train(self, x_train, y_train, x_test, y_test):
+    def train(self, x_train, y_train, x_test, y_test, e=10, batch_size=256):
         print("training the model with ", len(x_train), " training data")
         history = self.model.fit(x_train,
                                  y_train,
-                                 batch_size=256,
-                                 epochs=10,
+                                 batch_size=batch_size,
+                                 epochs=e,
                                  callbacks=self.call_backs,
                                  validation_data=(x_test, y_test))
 

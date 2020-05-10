@@ -18,7 +18,7 @@ def purge(filepath):
     with open(filepath, 'r') as readfile:
         seq_reader = csv.reader(readfile)
         for row in seq_reader:
-            if len(row[1]) > 2600:
+            if len(row[1]) > 300:
                 lines.append([row[1], row[2]])
 
     print(len(lines), " lines saved after purging ")
