@@ -104,14 +104,6 @@ def write_data(data, dirpath='./'):
     dev_data.to_csv(dirpath+'dev_data.txt', sep='\n', index=False)
     test_data.to_csv(dirpath+'test_data.txt', sep='\n', index=False)
 
-    # print(train_data.shape)
-    # print(dev_data.shape)
-    # print(test_data.shape)
-
-    # print()
-    # print(train_data)
-    # print(dev_data)
-    # print(test_data)
 
 def validate_rna_sequence(rna_seq):
     '''

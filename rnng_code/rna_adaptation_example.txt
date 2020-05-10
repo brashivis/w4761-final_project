@@ -3,17 +3,3 @@
 We use S and E as the only "parts of speech"
 - S denotes a pairing
 - E denotes a letter/word
-
-Grammar is essentially: 
-- S: SES | E
-- E: nS | nE | n
-??? TODO: look into this more...
-
-
-
-GGGCAAUCCUCUUCGGGCCC
-((((...((.....))))))
-
-
-GAUGGCACUCCCAUCAAUUGGAGC
-(((((..<<<))))).....>>>.
