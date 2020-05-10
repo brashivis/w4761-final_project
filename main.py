@@ -6,7 +6,7 @@ import post_process as pp
 
 
 if __name__ == "__main__":
-    epochs = 1
+    epochs = 20
 
     # get a list of RNA sequence and secondary structures
     lines = tk.purge('RNA_sequence_input.csv')
