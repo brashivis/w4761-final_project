@@ -79,14 +79,11 @@ def convert_notation_rnng(sequence, structure):
         elif s.isalpha() and s.islower(): parse_seq.append('(E {})) '.format(n))       
         else: raise AttributeError('Unknown structure token: {}'.format(s))
 
-        print(n, s)
-        print(parse_seq[-1])
     parse_seq.append(')')
     parse_seq_str = ''.join(parse_seq)
     if parse_seq_str.count('(') != parse_seq_str.count(')'):
-        print(sequence)
-        print(structure)
-        print(parse_seq_str)
+        # Code should never reach this point
+        raise AttributeError('Imbalanced structure \nStructure: {} \nSequence: {}'.format(structure, sequence))
     return parse_seq_str
 
 
@@ -107,14 +104,14 @@ def write_data(data, dirpath='./'):
     dev_data.to_csv(dirpath+'dev_data.txt', sep='\n', index=False)
     test_data.to_csv(dirpath+'test_data.txt', sep='\n', index=False)
 
-    print(train_data.shape)
-    print(dev_data.shape)
-    print(test_data.shape)
+    # print(train_data.shape)
+    # print(dev_data.shape)
+    # print(test_data.shape)
 
-    print()
-    print(train_data)
-    print(dev_data)
-    print(test_data)
+    # print()
+    # print(train_data)
+    # print(dev_data)
+    # print(test_data)
 
 def validate_rna_sequence(rna_seq):
     '''
@@ -131,6 +128,6 @@ if __name__ == '__main__':
     proc_data = convert_all_notation_rnng()
     write_data(proc_data)
 
-    print(proc_data.head())
+    # print(proc_data.head())
 
     
