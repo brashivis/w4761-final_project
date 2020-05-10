@@ -1,42 +1,94 @@
-def tokenizer(sequence, structure):
-    """
-    Tokenizer will parse the input sequence based on the
-    secondary structure of the RNA sequence
+import csv
+import numpy as np
+from keras.preprocessing.text import Tokenizer
+
+
+def purge(filepath):
+    '''
+    The purge method will extract data from the input .csv file and
+    remove rows that have <100 RNA nucleotides
     Args:
-        sequence: input sequence
-        structure: the secondary structure of the RNA sequence
+        filepath: the file path to the .csv file
 
     Returns:
-        left_paren_bucket: sequences with '(' secondary structure
-        right_paren_bucket: sequences with ')' secondary structure
-        less_than_bucket: sequences with '<' secondary structure
-        greater_than_bucket: sequences with '>' secondary structure
-        dot_bucket: sequences with '.' secondary structure
-    """
-    # make sure the dimensions match
-    if len(sequence) != len(structure):
-        print("the input sequence and the secondary structure have different dimensions")
-        return
-    # group the sequence with the same dot-parentheses representations together
-    left_paren_bucket = list()
-    right_paren_bucket = list()
-    less_than_bucket = list()
-    greater_than_bucket = list()
-    dot_bucket = list()
+        a list that contains the RNA sequence and secondary structure arrays
+    '''
+    lines = list()
+    # import the .csv as a list
+    with open(filepath, 'r') as readfile:
+        seq_reader = csv.reader(readfile)
+        for row in seq_reader:
+            if len(row[1]) > 300:
+                lines.append([row[1], row[2]])
 
-    group_start = 0
-    for i in range(len(structure)):
-        if structure[i] != structure[group_start]:
-            if structure[group_start] == '(':
-                left_paren_bucket.append(sequence[group_start: i])
-            elif structure[group_start] == ')':
-                right_paren_bucket.append(sequence[group_start: i])
-            elif structure[group_start] == '<':
-                less_than_bucket.append(sequence[group_start: i])
-            elif structure[group_start] == '>':
-                greater_than_bucket.append(sequence[group_start: i])
-            else:
-                dot_bucket.append(sequence[group_start: i])
-            group_start = i
+    print(len(lines), " lines saved after purging ")
+    return lines
 
-    return left_paren_bucket, right_paren_bucket, less_than_bucket, greater_than_bucket, dot_buckettokenizer.py
+
+def sequence_tokenizer(lines, kmer, increment):
+    '''
+    The sequence_tokenizer will tokenize the sequence and convert the token to
+    numeric values for training
+    Args:
+        lines: the input list that contains arrays of RNA sequence and secondary structures
+        kmer: the k-mer length for parsing the sequences
+        increment: the step size for the iteration loop
+
+    Returns:
+        sequences: the tokenized sequence in numeric representation
+        idx_word: a set that has the number to sequence mapping
+    '''
+    parsed_list = list()
+
+    if increment <= kmer:
+        for i in range(len(lines)):
+            sequence = lines[i][0]
+            structure = lines[i][1]
+            sub_parsed_list = list()
+
+            for j in range(0, len(structure) - kmer, increment):
+                sub_parsed_list.append([sequence[j: j + kmer], structure[j: j + kmer]])
+            parsed_list.extend(sub_parsed_list)
+    else:
+        print("invalid input: increment size > kmer")
+
+    token = Tokenizer(num_words=None, filters='', lower=False, split=' ')
+    # train the tokenizer and convert nucleotide into integers
+    token.fit_on_texts(parsed_list)
+    sequences = token.texts_to_sequences(parsed_list)
+    # save the mapping
+    idx_word = token.index_word
+
+    print(len(sequences), " sequences are tokenized")
+    return sequences, idx_word
+
+
+def feature_label_extractor(sequences, vocab_len):
+    '''
+    The function will generate the feature and label arrays
+    Args:
+        sequences: the input sequences
+        vocab_len: the lenght of the vocabulary array
+
+    Returns:
+        features: the features array
+        label_array: one-hot coded label array
+    '''
+    features = []
+    labels = []
+
+    for i in range(len(sequences)):
+        features.append(sequences[i][0])
+        labels.append(sequences[i][1])
+
+    features = np.asarray(features)
+    features = np.reshape(features, (len(features), 1))
+
+    # one-hot code the labels
+    label_array = np.zeros((len(features), vocab_len), dtype = np.int8)
+    for example_index, word_index in enumerate(labels):
+        label_array[example_index, word_index] = 1
+
+    print("created features with a dim of ", features.shape)
+    print("created one-hot coded labels with a dim of ", label_array.shape)
+    return features, label_array
