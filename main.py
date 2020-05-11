@@ -18,11 +18,12 @@ if __name__ == "__main__":
 
         # RNN
         print('Training RNN\n')
+        rnn_model_name = str(kmer) + '_kmer_RNN'
         # shuffle the data
         random.shuffle(lines)
 
         # run the tokenizer
-        tokenized_sequence, indexed_word = tk.sequence_tokenizer(lines, kmer, 1)
+        tokenized_sequence, indexed_word = tk.sequence_tokenizer(lines, kmer, 1, rnn_model_name)
         vocab_len = len(indexed_word) + 1
 
         # get feature and labels
@@ -36,7 +37,6 @@ if __name__ == "__main__":
         y_test = labels[split:]
 
         # initialize the models
-        rnn_model_name = str(kmer) + '_kmer_RNN'
         rnn_model = rnn.RNN(vocab_len, 1, rnn_model_name)
 
         # train and save outputs
@@ -46,11 +46,12 @@ if __name__ == "__main__":
 
         # CNN
         print('Training CNN')
+        cnn_model_name = str(kmer) + '_kmer_CNN'
         # shuffle the data
         random.shuffle(lines)
 
         # run the tokenizer
-        tokenized_sequence, indexed_word = tk.sequence_tokenizer(lines, kmer, 1)
+        tokenized_sequence, indexed_word = tk.sequence_tokenizer(lines, kmer, 1, cnn_model_name)
         vocab_len = len(indexed_word) + 1
 
         # get feature and labels
@@ -64,7 +65,6 @@ if __name__ == "__main__":
         y_test = labels[split:]
 
         # initialize the models
-        cnn_model_name = str(kmer) + '_kmer_CNN'
         cnn_model = cnn.CNN(vocab_len, 1, cnn_model_name)
 
         # train

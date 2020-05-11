@@ -60,7 +60,7 @@ def sequence_tokenizer(lines, kmer, increment, modelname):
     # save the mapping
     idx_word = token.index_word
 
-    with open(str(kmer) + modelname + '.csv', 'w') as file:
+    with open(modelname + '.csv', 'w') as file:
         fieldnames = ['symbols']
         writer = csv.DictWriter(file, fieldnames = fieldnames)
         writer.writeheader()

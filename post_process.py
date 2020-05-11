@@ -13,7 +13,6 @@ def save_and_plot(history, modelname=None):
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
-    plt.savefig('plots/{}_accuracy.png'.format(modelname))
 
     # summarize history for loss
     plt.subplot(212)
@@ -23,6 +22,5 @@ def save_and_plot(history, modelname=None):
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
-    plt.savefig('plots/{}_loss.png'.format(modelname))
 
-    plt.show()
+    plt.savefig('plots/{}_accurarcy_loss.png'.format(modelname))
