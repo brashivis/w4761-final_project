@@ -11,7 +11,7 @@ not included)
 
 import pandas as pd
 
-def read_data(filepath='../purged_RNA_secondary_structure.csv', chunksize=100, return_iter=False):
+def read_data(filepath='../RNA_sequence_input.csv', chunksize=100, return_iter=False):
     '''
     Reads data from provided CSV file.
 
@@ -100,9 +100,9 @@ def write_data(data, dirpath='./'):
     dev_data = data.iloc[train_len:train_len + dev_len]
     test_data = data.iloc[train_len + dev_len:]
 
-    train_data.to_csv(dirpath+'train_data.txt', sep='\n', index=False)
-    dev_data.to_csv(dirpath+'dev_data.txt', sep='\n', index=False)
-    test_data.to_csv(dirpath+'test_data.txt', sep='\n', index=False)
+    train_data.to_csv(dirpath+'train_data.txt', sep='\n', index=False, header=False)
+    dev_data.to_csv(dirpath+'dev_data.txt', sep='\n', index=False, header=False)
+    test_data.to_csv(dirpath+'test_data.txt', sep='\n', index=False, header=False)
 
 
 def validate_rna_sequence(rna_seq):
@@ -118,6 +118,7 @@ def validate_rna_sequence(rna_seq):
 
 if __name__ == '__main__':
     proc_data = convert_all_notation_rnng()
+    # proc_data = proc_data.sample(250)
     write_data(proc_data)
 
     # print(proc_data.head())
