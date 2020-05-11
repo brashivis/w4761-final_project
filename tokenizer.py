@@ -18,14 +18,14 @@ def purge(filepath):
     with open(filepath, 'r') as readfile:
         seq_reader = csv.reader(readfile)
         for row in seq_reader:
-            if len(row[1]) > 300:
+            if len(row[1]) > 2000:
                 lines.append([row[1], row[2]])
 
     print(len(lines), " lines saved after purging ")
     return lines
 
 
-def sequence_tokenizer(lines, kmer, increment):
+def sequence_tokenizer(lines, kmer, increment, modelname):
     '''
     The sequence_tokenizer will tokenize the sequence and convert the token to
     numeric values for training
@@ -33,6 +33,7 @@ def sequence_tokenizer(lines, kmer, increment):
         lines: the input list that contains arrays of RNA sequence and secondary structures
         kmer: the k-mer length for parsing the sequences
         increment: the step size for the iteration loop
+        modelname: the model name
 
     Returns:
         sequences: the tokenized sequence in numeric representation
@@ -58,6 +59,13 @@ def sequence_tokenizer(lines, kmer, increment):
     sequences = token.texts_to_sequences(parsed_list)
     # save the mapping
     idx_word = token.index_word
+
+    with open(str(kmer) + modelname + '.csv', 'w') as file:
+        fieldnames = ['symbols']
+        writer = csv.DictWriter(file, fieldnames = fieldnames)
+        writer.writeheader()
+        for i in range(1, len(idx_word), 1):
+            writer.writerow({'symbols':idx_word[i]})
 
     print(len(sequences), " sequences are tokenized")
     return sequences, idx_word
