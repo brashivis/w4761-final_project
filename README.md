@@ -2,6 +2,9 @@
 ## Overview
 Repository for our final project for Computational Genomics (COMS W4761)
 
+## Instructions  
+run the main.py file and it will start training the RNN and CNN models with selected k values of k=4, k=6, k=8, and k=10. Both RNN and CNN models will save the the models with the best accuracy as a .h5 file in the root folder. For each k value, validatin loss vs training loss and validation accuracy vs training accuracy will be plotted and saved in the "plots" folder. 
+
 ## Files
 * main.py  
 This the main function to take the input file, preprocess the data, tokenize, and train the model.
