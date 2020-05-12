@@ -67,8 +67,6 @@ This folder contains the code we wrote to adapt RNNG to our RNA dataset, as well
 
 The code in this directory has been tested on both macOS and Linux machines running Python 3.7 and the following packages:
 
-- Tensorflow 2.0
-- Keras (v. 2.3.1)
 - Pandas (v. 0.24.2)
 - NumPy (v. 1.18.1)
 - Matplotlib (v. 3.0.2)
