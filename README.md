@@ -19,6 +19,8 @@ The code requires Python 3 with the following packages:
 - NumPy (v. 1.18.1)
 - Matplotlib (v. 3.0.2)
 
+We recommend using a GPU to train the models and having more than 10-16gb of RAM.
+
 ## Files
 ### main.py  
 
@@ -110,3 +112,5 @@ The first step to adapting the RNA data we worked with for our project to work w
 Steps 2 and 3 require the user to have compiled and built the C++ RNNG model before training. Building the model requires a C++11-compatible compiler, the Boost libraries, Eigen, CMake, and EVALB. More details are available in the linked repository. Creating the oracle files depends only on Python, so building the full RNNG model is not needed for that step.
 
 With the RNA data, we had issues with the generative model. Specifically, we weren't able to get the loss to decrease from 1. We believe this was caused by the differences between our data and the natural language data the model expects.
+
+Training this model uses a single core on a computer and does not appear to need significant computing resources, though the data does take a good amount of memory. For our data, we were unable to get the discriminative model to converge on the entire dataset in over a week of training, so the runtime is very long.
