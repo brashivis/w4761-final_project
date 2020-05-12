@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     # get a list of RNA sequence and secondary structures
     lines = tk.purge('RNA_sequence_input.csv')
-    lines = lines[:100]
+#    lines = lines[:100]
 
     # Run All
     for kmer in range(4, 11, 2):

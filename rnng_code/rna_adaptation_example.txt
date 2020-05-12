@@ -1,5 +1,0 @@
-(S (E G) (S (E G) (S (E G) (S (E C) (E A) (E A) (E U) (S (E C) (S (E C) (E U) (E C) (E U) (E U) (E C) (E G)) (E G)) (E G)) (E C)) (E C)) (E C))
-
-We use S and E as the only "parts of speech"
-- S denotes a pairing
-- E denotes a letter/word

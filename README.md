@@ -1,32 +1,108 @@
-# w4761-final_project
-## Overview
-Repository for our final project for Computational Genomics (COMS W4761)
+# COMS W4761 Final Project
 
-## Instructions  
-run the main.py file and it will start training the RNN and CNN models with selected k values of k=4, k=6, k=8, and k=10. Both RNN and CNN models will save the the models with the best accuracy as a .h5 file in the root folder. For each k value, validatin loss vs training loss and validation accuracy vs training accuracy will be plotted and saved in the "plots" folder. 
+Kevin Wong, William Huang, Jayant Madugula
+
+# Overview
+This repository contains the code we used for our final project in COMS W4761. There are two main parts of this repository:
+
+1. "Direct Prediction" models -- these are the files located in main directory
+2. RNNG -- these files were written to adapt RNA data to work with RNNG, a model proposed by Dyer, Kuncoro, Ballesteros, and Smith in 2016. Further information, including a link to their repository, is below.
+
+## Instructions for the "Direct Prediction" Models
+Run the main.py file using the command `$ python main.py` (`$` represents the prompt and should not be typed). The script will start training individual RNN and CNN models with selected k values of k=4, k=6, k=8, and k=10 (a total of 8 models), where k is the length of the k-mer the model is training on. Each model will save their best parameters as a .h5 file in the root folder. For each k value, validation loss vs. training loss and validation accuracy vs. training accuracy will be plotted and saved in the "plots" folder. These plots will also appear after each model has completed training -- simply close the plot window for the next model to begin training.
+
+The code requires Python 3 with the following packages:
+
+- Tensorflow 2.0
+- Keras (v. 2.3.1)
+- Pandas (v. 0.24.2)
+- NumPy (v. 1.18.1)
+- Matplotlib (v. 3.0.2)
 
 ## Files
-* main.py  
+### main.py 
+
 This the main function to take the input file, preprocess the data, tokenize, and train the model.
-* cnn.py  
+
+### cnn.py  
+
 This file is used to configure the CNN. 
-* rnn.py  
+
+### rnn.py  
+
 This file is used to configure the RNN. 
-* tokenizer.py  
+
+### tokenizer.py  
+
 This file contains functions for pre-processing the data such as purging the input data, tokenize the RNA sequence, and creating features and labels for training. 
-* post_process.py  
+
+### post_process.py  
+
 This file contains functions for plotting the training vs validation loss and accuracy.
-* RNA_sequence_input.csv  
+
+### RNA_sequence_input.csv  
+
 This the input file for the main function
 
 ## Files in folder dataset_preparation_Kevin_Wong_hw2735
-* Cleaning up ct files.ipynb
-This Jupyter Notebook cleans the .ct files initially downloaded from RNA STRAND database, and also contains scripts to integrate the converted .ct files into one single .csv file in dot-bracket notation. Further explanation is given within the notebook
-* RNA_secondary_structure.csv
+### Cleaning up .ct files.ipynb
+
+This Jupyter Notebook cleans the .ct files initially downloaded from RNA STRAND database, and also contains scripts to integrate the converted .ct files into one single .csv file in dot-bracket notation. Further explanation is given within the notebook.
+
+### RNA_secondary_structure.csv
+
 This is the completed dataset for the project
-* cmd commands.xlsx
+
+### cmd commands.xlsx
+
 Excel is used to create the commands for "ct2dot" tool
-* ct2dot_cmd.txt
+
+### ct2dot_cmd.txt
+
 This is the command line script used to execute the"ct2dot" tool, within Windows environment
 
-## Files in folder rnng_code
+## `rnng_code`
+
+This folder contains the code we wrote to adapt RNNG to our RNA dataset, as well as some examples and results. Each file is described below.
+
+The code in this directory has been tested on both macOS and Linux machines running Python 3.7 and the following packages:
+
+- Tensorflow 2.0
+- Keras (v. 2.3.1)
+- Pandas (v. 0.24.2)
+- NumPy (v. 1.18.1)
+- Matplotlib (v. 3.0.2)
+
+*Important:* While the code in this directory was developed so we could adapt our data to work with RNNG, the RNNG model itself has different requirements, including Python 2 and C++. The RNNG repository can be found [here](https://github.com/clab/rnng).
+
+### rna_conversion.py
+
+This file is designed to be run as a Python script. It can be run using the following command `$ python rna_conversion.py` (`$` should not be included in the command).
+
+This script acts as a bridge between the RNA sequence and secondary structure data from our project and RNNG. The script will automatically read the *RNA_sequence_input.csv* file the parent directory, generate the format expected by RNNG's scripts, and output three files:
+
+1. train.txt
+2. test.txt
+3. dev.txt
+
+*train.txt* contains the training data, *test.txt* contains the testing data, and *dev.txt* contains validation data. These three files can now be used with RNNG by following the instructions on the RNNG repository's README. We discuss this in more detail below (**"Using RNNG"**).
+
+Note: we have included copies of these .txt files in the repository already. Rerunning *rna_conversion.py* will overwrite these files if they remain in the directory.
+
+### rnng_log_parsing.py
+
+This file automates parsing the log files generated by the RNNG models during training to create a graph of training loss over iterations. Currently, this script will look for a file called *log.txt* in the same directory to parse.
+
+The script can be run using the command: `$python rnng_log_parsing.py`
+
+### Using RNNG
+
+The first step to adapting the RNA data we worked with for our project to work with RNNG is to use the *rna_conversion.py* script as discussed above. Once that is complete, the instructions on the [RNNG respository](https://github.com/clab/rnng) apply, with the generated train, test, and dev files usable with RNNG's training process. We outline the basic steps we followed to train the models here:
+
+1. Create the "oracle" files using the Python 2 scripts found in the RNNG repository. While we focused our discussion on the discriminative model, oracle files for both  the discriminative model and generative model can be created.
+2. Train the Discriminative m odel (detailed instructions are available at the linked repository). This can be done with and without the `-P` flag, which denotes the use of parts-of-speech in the model's training.
+3. Train the Generative model. In addition to the instructions in the RNNG repository, I also had to include the `--cnn-mem 1700` flag, just as shown in the Discriminative model's instructions, to get the model to train. Note, the position of this flag mattered for us -- this flag needed to go before the other flags.
+
+Steps 2 and 3 require the user to have compiled and built the C++ RNNG model before training. Building the model requires a C++11-compatible compiler, the Boost libraries, Eigen, CMake, and EVALB. More details are available in the linked repository. Creating the oracle files depends only on Python, so building the full RNNG model is not needed for that step.
+
+With the RNA data, we had issues with the generative model. Specifically, we weren't able to get the loss to decrease from 1. We believe this was caused by the differences between our data and the natural language data the model expects.
