@@ -25,6 +25,13 @@ class Predict:
         self.dict = mapping
 
     def predict(self, primary_seq):
+        '''
+        predicts an output based on the input sequence
+        Args:
+            primary_seq: the input primary RNA sequence
+        Returns:
+            The predicted secondary RNA structure in the dot-paren representation
+        '''
         secondary_seq = []
         tokenized = []
         output = ''
@@ -71,6 +78,7 @@ if __name__ == "__main__":
     print(sample[1])
     print('\n')
 
+    # give the input mapping file and model
     rnn_predictor = Predict(6, '6_kmer_RNN.csv', '6_kmer_RNN.h5')
     cnn_predictor = Predict(6, '6_kmer_CNN.csv', '6_kmer_CNN.h5')
     rnn_predicted = rnn_predictor.predict(sample[0])
