@@ -63,8 +63,20 @@ class Predict:
 if __name__ == "__main__":
     lines = tk.purge('RNA_sequence_input.csv')
     random.shuffle(lines)
+    sample = lines[1]
 
-    predictor = Predict(6, '6_CNN.csv', '6_kmer_RNN.h5')
-    predicted = predictor.predict(lines[1][0])
-    print(predicted)
-    print(lines[1][1])
+    print('input primary sequence')
+    print(sample[0])
+    print('expected secondary structure:')
+    print(sample[1])
+    print('\n')
+
+    rnn_predictor = Predict(6, '6_kmer_RNN.csv', '6_kmer_RNN.h5')
+    cnn_predictor = Predict(6, '6_kmer_CNN.csv', '6_kmer_CNN.h5')
+    rnn_predicted = rnn_predictor.predict(sample[0])
+    cnn_predicted = cnn_predictor.predict(sample[0])
+
+    print('RNN prediction:')
+    print(rnn_predicted)
+    print('CNN prediction:')
+    print(cnn_predicted)
