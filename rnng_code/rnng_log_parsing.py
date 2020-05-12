@@ -17,11 +17,11 @@ def plot_error(err_vals, plot_filename):
     plt.plot(err_vals)
     plt.xlabel('Iteration')
     plt.ylabel('Loss')
-    plt.show()
     plt.savefig(plot_filename)
 
 if __name__ == '__main__':
     filename = 'log.txt'
     log_file = open(filename)
     err_vals = pull_error_from_log(log_file)
+    plot_error(err_vals, './rnng_err_plot.png')
 
