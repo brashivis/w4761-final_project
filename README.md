@@ -20,9 +20,13 @@ The code requires Python 3 with the following packages:
 - Matplotlib (v. 3.0.2)
 
 ## Files
-### main.py 
+### main.py  
 
 This the main function to take the input file, preprocess the data, tokenize, and train the model.
+
+### predict.py  
+
+The predict file is used to generate predictions based on a trained model.
 
 ### cnn.py  
 
